@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-
 const ProductSchema = new mongoose.Schema(
   {
     name: {
@@ -20,18 +19,18 @@ const ProductSchema = new mongoose.Schema(
     },
     image: {
       type: String,
-      default: '/uploads/example.jpeg',
+    
     },
     category: {
       type: String,
       required: [true, 'Please provide product category'],
-      enum: ['office', 'kitchen', 'bedroom'],
+      enum: ['office', 'kitchen', 'bedroom', 'living room', 'dining', 'kids'],
     },
     company: {
       type: String,
       required: [true, 'Please provide company'],
       enum: {
-        values: ['ikea', 'liddy', 'marcos'],
+        values: ['ikea', 'liddy', 'marcos', 'caressa'],
         message: '{VALUE} is not supported',
       },
     },
@@ -61,24 +60,10 @@ const ProductSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    user: {
-      type: mongoose.Types.ObjectId,
-      ref: 'User',
-      required: true,
-    },
+   
   },
-  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
+  { timestamps: true}
 );
 
-ProductSchema.virtual('reviews', {
-  ref: 'Review',
-  localField: '_id',
-  foreignField: 'product',
-  justOne: false,
-});
-
-ProductSchema.pre('remove', async function (next) {
-  await this.model('Review').deleteMany({ product: this._id });
-});
 
 module.exports = mongoose.model('Product', ProductSchema);
